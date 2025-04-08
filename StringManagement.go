@@ -4,7 +4,6 @@ import (
     "fmt"
     "bufio"
     "os"
-    "unicode"
 )
 
 // Funcion para invertir un string in-place
@@ -20,13 +19,26 @@ func getVowelsAndConsonants(s []rune) (int, map[rune]int, int){
     vowels, consonants := 0, 0
 
     for _, char := range s {
-	if unicode.IsLetter(char) {
-	    if isVowel(char){
+	switch char{
+	    case 'A':
+		char = 'a'
+	    case 'I':
+		char = 'i'
+	    case 'U':
+		char = 'u'
+	    case 'E':
+		char = 'e'
+	    case 'O':
+		char = 'o'
+	}
+	switch char{
+	    case 'a','i','u','e','o':
 		vowels++
-		numPerVowel[unicode.ToLower(char)]++
-	    } else {
+		numPerVowel[char]++
+	    case ' ':
+		continue
+	    default:
 		consonants++
-	    }
 	}
     }
 
@@ -34,12 +46,14 @@ func getVowelsAndConsonants(s []rune) (int, map[rune]int, int){
 }
 
 // Funcion para saber si un caracter es una vocal
-func isVowel(c rune) bool{
-    vowels := "aiueoAIUEO"
-    for _, v := range vowels{
-	if c == v {
-	    return true
-	}
+func isAlphabet(c rune) bool{
+    alphabetMayus := rune(65)
+    alphabetMinus := rune(97)
+    mayus := c - alphabetMayus
+    minus := c - alphabetMinus
+    space := c - rune(32)
+    if (mayus <= 25 && mayus >= 0) || (minus <= 25 && minus >= 0) || (space == 0){
+	return true
     }
     return false
 }
@@ -62,7 +76,7 @@ func main() {
     // Procesar el input para eliminar numeros y caracteres especiales
     processedInput := []rune{}
     for _, char := range input{
-	if unicode.IsLetter(char) || char==' ' {
+	if isAlphabet(char){
 	    processedInput = append(processedInput, char)
 	}
     }
