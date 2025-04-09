@@ -244,6 +244,15 @@ int main(int argc, char* argv[]) {
     }
 
     char* input = argv[1];
+    int N = getStringLength(input);
+    cout << "Total char: "<< N << endl;
+
+    if ( N >= 100 ){
+        cerr << "String longer that 100" << endl;
+        cerr << "Exiting..." << endl;
+        return 1;
+    }
+
     CharData charData; // estructura para el conteo de los caracteres
     cout << "Original String: " << input << endl;
 
