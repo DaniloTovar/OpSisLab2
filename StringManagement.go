@@ -2,8 +2,8 @@ package main
 
 import (
     "fmt"
-    "bufio"
     "os"
+    "io/ioutil"
 )
 
 // Funcion para invertir un string in-place
@@ -20,15 +20,15 @@ func getVowelsAndConsonants(s []rune) (int, map[rune]int, int){
 
     for _, char := range s {
 	switch char{
-	    case 'A':
+	    case 'A', 'Á', 'á':
 		char = 'a'
-	    case 'I':
+	    case 'I', 'Í', 'í':
 		char = 'i'
-	    case 'U':
+	    case 'U', 'Ú', 'ú':
 		char = 'u'
-	    case 'E':
+	    case 'E', 'É', 'é':
 		char = 'e'
-	    case 'O':
+	    case 'O', 'Ó', 'ó':
 		char = 'o'
 	}
 	switch char{
@@ -67,11 +67,24 @@ func replaceSpacesInPlace(s *[]rune) {
     }
 }
 
-func main() {
+func main(){
+    // Verificar que se ingresen la cantidad correcta de argumentos
+    if (len(os.Args) > 2){
+	fmt.Println("Error: Se ingresaron mas argumentos de los requeridos")
+	os.Exit(1)
+    }
+
     // Obtener el input del usuario
-    var reader = bufio.NewReader(os.Stdin)
-    fmt.Print("Ingresa una palabra o frase (No superar 100 caracteres): ")
-    input, _ := reader.ReadString('\n')
+    varg := os.Args[1]
+
+    // If argument its a file, read the file content
+    var input string
+    content, err := ioutil.ReadFile(varg)
+    if (err == nil) {
+	input = string(content)
+    } else{
+	input = varg
+    }
 
     // Procesar el input para eliminar numeros y caracteres especiales
     processedInput := []rune{}
@@ -84,30 +97,34 @@ func main() {
     // Verificar que el input cumpla con la logitud maxima
     var length = len(processedInput)
     if (length > 100){
-	fmt.Printf("La longitud de la entrada ingresada (%d) supera el limite de caracteres.",length)
+	fmt.Printf("Error: La longitud de la entrada ingresada (%d) supera el limite de caracteres.",length)
     } else if (length <= 0){
-	fmt.Println("La entrada ingresada no puede estar vacia.")
+	fmt.Println("Error: La entrada ingresada no puede estar vacia.")
     } else{
 
 
     // Ejecutar las funciones
     // Invertir la cadena en su lugar
     flipStringWithPointer(&processedInput)
-    fmt.Println("\nString invertido:")
-    fmt.Println(string(processedInput))
+    fmt.Print(string(processedInput))
 
     // Contar el numero de vocales y consonantes
     vowels, numPerVow, consonants := getVowelsAndConsonants(processedInput)
-    fmt.Println("\nNumero de vocales:", vowels)
-    for vowel, num := range numPerVow {
-	fmt.Printf("Numero de '%c': %d\n", vowel, num)
+    fmt.Print(" ", vowels)
+
+    orderedVowels := []rune{'a','e','i','o','u'}
+    for _,char := range(orderedVowels) {
+	value := numPerVow[char]
+	if (value != 0){
+	    fmt.Print(" ", value)
+	}
     }
-    fmt.Println("\nNumero de consonantes:", consonants)
+
+    fmt.Print(" ", consonants)
 
 
     // Reemplazar espacios por barra baja
     replaceSpacesInPlace(&processedInput)
-    fmt.Println("\nString modificado:")
-    fmt.Println(string(processedInput),"\n")
+    fmt.Print(" ", string(processedInput))
     }
 }

@@ -1,0 +1,1 @@
+Hello world, lets try to make a new string that its readable by this program.
