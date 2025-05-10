@@ -1,6 +1,9 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
+#include <map>
+#include <cctype>
 
 using namespace std;
 
@@ -21,7 +24,10 @@ using namespace std;
  * bool result = isAlphabetic('_');  // result será false
  */
 bool isAlphabetic(char c) {
-    return ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'));
+    return (
+        (c >= 'A' && c <= 'Z') || 
+        (c >= 'a' && c <= 'z')
+    );
 }
 
 /**
@@ -141,6 +147,19 @@ void reverseString(char* str) {
     }
 }
 
+// bool isSpanishVowel(char32_t c) {
+//     static const std::unordered_set<char32_t> spanishVowels = {
+//         U'a', U'e', U'i', U'o', U'u',
+//         U'á', U'é', U'í', U'ó', U'ú',
+//         U'ä', U'ë', U'ï', U'ö', U'ü',
+//         U'A', U'E', U'I', U'O', U'U',
+//         U'Á', U'É', U'Í', U'Ó', U'Ú',
+//         U'Ä', U'Ë', U'Ï', U'Ö', U'Ü'
+//     };
+    
+//     return spanishVowels.find(c) != spanishVowels.end();
+// }
+
 /**
  * @brief Verifica si un carácter es una vocal.
  *
@@ -183,9 +202,7 @@ bool isVowel(const char* c) {
  * vocales, guiones bajos y consonantes.
  */
 struct CharData {
-    // Un hash map para contar las vocales (tanto mayúsculas como minúsculas)
-    unordered_map<char, int> vowelCount;
-
+    map<char, int> vowelCount;
     // Total de vocales
     int totalVowels = 0;
 
@@ -218,7 +235,7 @@ CharData countChars(char* arr) {
 
     while (*arr != '\0') {
         if (isVowel(arr)) {  // Si es una vocal, la contamos
-            result.vowelCount[*arr]++;  // Aumenta el conteo de la vocal
+            result.vowelCount[tolower(*arr)]++;  // Aumenta el conteo de la vocal
             result.totalVowels++;  // Aumenta el total de vocales
         } 
         else if (*arr == '_') {  // Si es un guion bajo, lo contamos
@@ -245,7 +262,7 @@ int main(int argc, char* argv[]) {
 
     char* input = argv[1];
     int N = getStringLength(input);
-    cout << "Total char: "<< N << endl;
+    // cout << "Total char: "<< N << endl;
 
     if ( N >= 100 ){
         cerr << "String longer that 100" << endl;
@@ -254,28 +271,33 @@ int main(int argc, char* argv[]) {
     }
 
     CharData charData; // estructura para el conteo de los caracteres
-    cout << "Original String: " << input << endl;
+    //cout << "Original String: " << input << endl;
 
     clean(input);
 
     reverseString(input);
-    cout << "Reversed String: " << input << endl;
+    //cout << "Reversed String: " << input << endl;
+    cout << input << ' ';
 
     replaceSpacesWithUnderscores(input);
 
     // Obtenemos la información del conteo de los caracteres del string
     charData = countChars(input);
     
-    cout << "Number of vowels: " << charData.totalVowels << endl;
+    //cout << "Number of vowels: " << charData.totalVowels << endl;
+    cout << charData.totalVowels << ' ';
 
     // Imprime el par vocal : cantidad de esa vocal en la cadena
     for (const auto& pair : charData.vowelCount) {
-        cout << "Number of '" << pair.first << "': " << pair.second << endl;
+        //cout << "Number of '" << pair.first << "': " << pair.second << endl;
+        cout << pair.second << ' ';
     }
 
-    cout << "Number of consonants: " << charData.totalConsonants << endl;
+    //cout << "Number of consonants: " << charData.totalConsonants << endl;
+    cout << charData.totalConsonants << ' ';
 
-    cout << "Modified String: " << input << endl;
+    //cout << "Modified String: " << input << endl;
+    cout << input << endl;
 
     return 0;
 }
